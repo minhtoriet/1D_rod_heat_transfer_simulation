@@ -36,6 +36,10 @@ def run_plot(L, alpha, f, back_callback):
     lc.set_array(u)
     ax.add_collection(lc)
 
+    # # Colorbar
+    cb = fig.colorbar(lc, ax=ax, pad=0.1)
+    cb.set_label('Temperature')
+
     # Back Button
     btn_ax = plt.axes([0.84, 0.02, 0.13, 0.05], facecolor='#37474F')
     back_btn = Button(btn_ax, 'Back to Input', color='#37474F', hovercolor='#455A64')
