@@ -17,8 +17,19 @@ def start_simulation():
             raise ValueError("Please select a metal.")
         init_expr = gui_widgets['expr'].get()
         f = parse_initial_condition(init_expr, L)
+
+        bc_selected = gui_widgets['bc_type'].get()
+        bc_type = 'dirichlet' if 'Dirichlet' in bc_selected else 'neumann'
+        if bc_type == 'dirichlet':
+            bc_params = {
+                'left': float(gui_widgets['left_temp'].get()),
+                'right': float(gui_widgets['right_temp'].get())
+            }
+        else:
+            bc_params = None
+
         gui_root.withdraw()
-        run_plot(L, alpha, f, back_callback=gui_root.deiconify)
+        run_plot(L, alpha, f, back_callback=gui_root.deiconify, bc_type=bc_type, bc_params=bc_params)
     except ValueError as ve:
         messagebox.showerror("Input Error", str(ve))
     except Exception as e:
@@ -38,6 +49,16 @@ def start_dual_simulation():
         init_expr1 = gui_widgets['expr1'].get()
         f1 = parse_initial_condition(init_expr1, L1)
 
+        bc_selected1 = gui_widgets['bc_type1'].get()
+        bc_type1 = 'dirichlet' if 'Dirichlet' in bc_selected1 else 'neumann'
+        if bc_type1 == 'dirichlet':
+            bc_params1 = {
+                'left': float(gui_widgets['left_temp1'].get()),
+                'right': float(gui_widgets['right_temp1'].get())
+            }
+        else:
+            bc_params1 = None
+
         # Right simulation
         L2 = float(gui_widgets['length2'].get())
         if L2 <= 0:
@@ -49,13 +70,25 @@ def start_dual_simulation():
         init_expr2 = gui_widgets['expr2'].get()
         f2 = parse_initial_condition(init_expr2, L2)
 
+        bc_selected2 = gui_widgets['bc_type2'].get()
+        bc_type2 = 'dirichlet' if 'Dirichlet' in bc_selected2 else 'neumann'
+        if bc_type2 == 'dirichlet':
+            bc_params2 = {
+                'left': float(gui_widgets['left_temp2'].get()),
+                'right': float(gui_widgets['right_temp2'].get())
+            }
+        else:
+            bc_params2 = None
+
         gui_root.withdraw()
 
         # Run two plots side-by-side simultaneously
         run_dual_plots(
             L1, alpha1, f1, metal1,
             L2, alpha2, f2, metal2,
-            back_callback=gui_root.deiconify
+            back_callback=gui_root.deiconify,
+            bc_type1=bc_type1, bc_params1=bc_params1,
+            bc_type2=bc_type2, bc_params2=bc_params2
         )
 
     except ValueError as ve:
@@ -141,8 +174,37 @@ def create_gui():
     entry_expr = tk.Entry(single_frame, width=40, font=('Consolas', 11), bg='#424242', fg='#FFFFFF',
                           insertbackground='#FFFFFF', relief='flat', bd=5)
     entry_expr.pack(pady=5)
-    entry_expr.insert(0, "sin(pi * x / 0.5)")
+    entry_expr.insert(0, "sin(pi * x / L)")
     gui_widgets['expr'] = entry_expr
+
+    tk.Label(single_frame, text="Boundary Condition:").pack(pady=(15, 5))
+    combo_bc = ttk.Combobox(single_frame, values=['Neumann (Insulated)', 'Dirichlet (Fixed Temp)'], state="readonly", width=20)
+    combo_bc.pack(pady=5)
+    combo_bc.set('Neumann (Insulated)')
+    gui_widgets['bc_type'] = combo_bc
+
+    dir_frame = tk.Frame(single_frame, bg='#212121')
+    tk.Label(dir_frame, text="Left Temp:").pack(side='left', padx=5)
+    entry_left = tk.Entry(dir_frame, width=10, font=('Consolas', 11), bg='#424242', fg='#FFFFFF',
+                          insertbackground='#FFFFFF', relief='flat', bd=5)
+    entry_left.pack(side='left', padx=5)
+    entry_left.insert(0, "0")
+    gui_widgets['left_temp'] = entry_left
+    tk.Label(dir_frame, text="Right Temp:").pack(side='left', padx=5)
+    entry_right = tk.Entry(dir_frame, width=10, font=('Consolas', 11), bg='#424242', fg='#FFFFFF',
+                           insertbackground='#FFFFFF', relief='flat', bd=5)
+    entry_right.pack(side='left', padx=5)
+    entry_right.insert(0, "0")
+    gui_widgets['right_temp'] = entry_right
+    gui_widgets['dir_frame'] = dir_frame
+
+    def toggle_dir(event=None):
+        if 'Dirichlet' in gui_widgets['bc_type'].get():
+            dir_frame.pack(pady=10)
+        else:
+            dir_frame.pack_forget()
+    combo_bc.bind('<<ComboboxSelected>>', toggle_dir)
+    toggle_dir()
 
     gui_widgets['single_frame'] = single_frame
 
@@ -165,8 +227,33 @@ def create_gui():
 
     tk.Label(left_frame, text="f(x):").pack(pady=(10,5))
     ex1 = tk.Entry(left_frame, width=25, font=('Consolas', 10), bg='#424242', fg='#FFFFFF', insertbackground='#FFFFFF')
-    ex1.pack(pady=5); ex1.insert(0, "sin(pi * x / 0.5)")
+    ex1.pack(pady=5); ex1.insert(0, "sin(pi * x / L)")
     gui_widgets['expr1'] = ex1
+
+    tk.Label(left_frame, text="BC:").pack(pady=(10,5))
+    combo_bc1 = ttk.Combobox(left_frame, values=['Neumann (Insulated)', 'Dirichlet (Fixed Temp)'], state="readonly", width=18)
+    combo_bc1.pack(pady=5)
+    combo_bc1.set('Neumann (Insulated)')
+    gui_widgets['bc_type1'] = combo_bc1
+
+    dir_frame1 = tk.Frame(left_frame, bg='#212121')
+    tk.Label(dir_frame1, text="Left:").pack(side='left', padx=2)
+    entry_left1 = tk.Entry(dir_frame1, width=6, font=('Consolas', 10), bg='#424242', fg='#FFFFFF', insertbackground='#FFFFFF')
+    entry_left1.pack(side='left', padx=2); entry_left1.insert(0, "0")
+    gui_widgets['left_temp1'] = entry_left1
+    tk.Label(dir_frame1, text="Right:").pack(side='left', padx=2)
+    entry_right1 = tk.Entry(dir_frame1, width=6, font=('Consolas', 10), bg='#424242', fg='#FFFFFF', insertbackground='#FFFFFF')
+    entry_right1.pack(side='left', padx=2); entry_right1.insert(0, "0")
+    gui_widgets['right_temp1'] = entry_right1
+    gui_widgets['dir_frame1'] = dir_frame1
+
+    def toggle_dir1(event=None):
+        if 'Dirichlet' in gui_widgets['bc_type1'].get():
+            dir_frame1.pack(pady=5)
+        else:
+            dir_frame1.pack_forget()
+    combo_bc1.bind('<<ComboboxSelected>>', toggle_dir1)
+    toggle_dir1()
 
     # Right side
     right_frame = tk.LabelFrame(dual_frame, text=" Right Simulation ", bg='#212121', fg='#4FC3F7', font=('Helvetica', 10, 'bold'))
@@ -184,8 +271,33 @@ def create_gui():
 
     tk.Label(right_frame, text="f(x):").pack(pady=(10,5))
     ex2 = tk.Entry(right_frame, width=25, font=('Consolas', 10), bg='#424242', fg='#FFFFFF', insertbackground='#FFFFFF')
-    ex2.pack(pady=5); ex2.insert(0, "sin(pi * x / 0.5)")
+    ex2.pack(pady=5); ex2.insert(0, "sin(pi * x / L)")
     gui_widgets['expr2'] = ex2
+
+    tk.Label(right_frame, text="BC:").pack(pady=(10,5))
+    combo_bc2 = ttk.Combobox(right_frame, values=['Neumann (Insulated)', 'Dirichlet (Fixed Temp)'], state="readonly", width=18)
+    combo_bc2.pack(pady=5)
+    combo_bc2.set('Neumann (Insulated)')
+    gui_widgets['bc_type2'] = combo_bc2
+
+    dir_frame2 = tk.Frame(right_frame, bg='#212121')
+    tk.Label(dir_frame2, text="Left:").pack(side='left', padx=2)
+    entry_left2 = tk.Entry(dir_frame2, width=6, font=('Consolas', 10), bg='#424242', fg='#FFFFFF', insertbackground='#FFFFFF')
+    entry_left2.pack(side='left', padx=2); entry_left2.insert(0, "0")
+    gui_widgets['left_temp2'] = entry_left2
+    tk.Label(dir_frame2, text="Right:").pack(side='left', padx=2)
+    entry_right2 = tk.Entry(dir_frame2, width=6, font=('Consolas', 10), bg='#424242', fg='#FFFFFF', insertbackground='#FFFFFF')
+    entry_right2.pack(side='left', padx=2); entry_right2.insert(0, "0")
+    gui_widgets['right_temp2'] = entry_right2
+    gui_widgets['dir_frame2'] = dir_frame2
+
+    def toggle_dir2(event=None):
+        if 'Dirichlet' in gui_widgets['bc_type2'].get():
+            dir_frame2.pack(pady=5)
+        else:
+            dir_frame2.pack_forget()
+    combo_bc2.bind('<<ComboboxSelected>>', toggle_dir2)
+    toggle_dir2()
 
     gui_widgets['dual_frame'] = dual_frame
 
