@@ -47,7 +47,7 @@ Crank–Nicolson applies centered second differences in space and averages betwe
 - r\,u_{i-1}^{\,n+1} + (1 + 2r)\,u_{i}^{\,n+1} - r\,u_{i+1}^{\,n+1}
 = r\,u_{i-1}^{\,n} + (1 - 2r)\,u_{i}^{\,n} + r\,u_{i+1}^{\,n}.
 ```
-Which can be solved via a tridiagonal linear system $A,u^{n+1} = b$ at each time step (time complexity $O(n)$ using Thomas algorithm).  
+Which can be solved via a tridiagonal linear system $Au^{n+1} = b$ at each time step (time complexity $O(n)$ using Thomas algorithm).  
 
  4. Boundary conditions will be implemented differently on the first and last row of the tridiagonal matrix
 
