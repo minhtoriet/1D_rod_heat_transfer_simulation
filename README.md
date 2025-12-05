@@ -1,6 +1,6 @@
 # 1-Dimensional heat transfer simulation app
 ## Introduction
-Hi folks!  Just like the what the title suggests  (hope you have an idea of what that is before coming to us).  This app lets you skip any kind of abstraction  (by abstracting and basically ignoring the 2D properties of an actual rod) and gets straight  to seeing how heat eventually redistribute and come to an equilibrium after some time.
+Hi folks!  Just like what the title suggests  (hope you have an idea of what that is before coming to us).  This app lets you skip any kind of abstraction  (by abstracting and basically ignoring the 2D properties of an actual rod) and gets straight  to seeing how heat eventually redistribute and come to an equilibrium after some time.
 
 1. You can refer to the following material for our numerical approach for the app: [Introduction to Numerical Methods in Heat Transfer](https://ntrs.nasa.gov/api/citations/20200006182/downloads/Introduction%20to%20Numerical%20Methods%20in%20Heat%20Transfer.pdf).
 
