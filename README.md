@@ -60,4 +60,6 @@ Which can be solved via a tridiagonal linear system $Au^{n+1} = b$ at each time 
 
 > refer to [this](https://www.math.ntnu.no/emner/TMA4135/2015h/notater/crank-nicolson/cn.pdf) for the derivation of Crank-Nicolson method (I don't get it either). 
 
+## Demo
+![Recording 2025-12-06 142026.gif](https://github.com/minhtoriet/1D_rod_heat_transfer_simulation/blob/main/Recording%202025-12-06%20142026.gif)
 
