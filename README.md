@@ -6,7 +6,14 @@ Hi folks!  Just like what the title suggests  (hope you have an idea of what tha
 
 2. As well as consulting this for an analytical solution for such problem:  [The One-Dimensional Heat Equation](http://ramanujan.math.trinity.edu/rdaileda/teach/s17/m3357/lectures/lecture9.pdf).
 
-## Basics:
+## Explaination
+Imagine heating up a metal rod.  You can control the temperature of the rod at a certain length, like heating up in one place while cooling down another.  Then you stop changing heat on the rod and starts counting time.  We represent different spots on the rod of length $L$ at time $t$ by $x \in [0,L]$, with temperature $u(x,t)$
+
+![rod](https://iu.pressbooks.pub/app/uploads/sites/1316/2023/11/Heat-conduction.svg-300x151.png)  
+
+However, solving such problem is known to be difficult. Therefore, choosing a boundary condition is just as important as solving the problem itself, as it makes the problem more digestible while focusing on the most important point.  Details of some BCs will be listed in the following part.  [A boundary conditions are constraints necessary for the solution of a boundary value problem](https://www.simscale.com/docs/simwiki/numerics-background/what-are-boundary-conditions/).  In this case, BCs are applied to two heads of the rod.
+
+## Basics
 1. We solve the one-dimensional heat (diffusion) equation on a rod of length 𝐿:    
 ```math
 \frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}, \qquad x \in (0,L),\; t>0.
@@ -51,8 +58,6 @@ Which can be solved via a tridiagonal linear system $Au^{n+1} = b$ at each time 
 
  4. Boundary conditions will be implemented differently on the first and last row of the tridiagonal matrix
 
-
-
->just give up lol this is **not** intended to get you to understand all ts
+> refer to [this](https://www.math.ntnu.no/emner/TMA4135/2015h/notater/crank-nicolson/cn.pdf) for the derivation of Crank-Nicolson method (I don't get it either). 
 
 
